@@ -1,6 +1,6 @@
 # API RESTful Profissional com Spring Boot, PostgreSQL e Segurança JWT
 
-![Java](https://img-shields-io.proxy.start.gg/badge/Java-17+-orange?style=for-the-badge&logo=openjdk) ![Spring Boot](https://img-shields-io.proxy.start.gg/badge/Spring_Boot-3.3+-green?style=for-the-badge&logo=spring) ![PostgreSQL](https://img-shields-io.proxy.start.gg/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql) ![Docker](https://img-shields-io.proxy.start.gg/badge/Docker-blue?style=for-the-badge&logo=docker) ![Render](https://img-shields-io.proxy.start.gg/badge/Render-46E3B7?style=for-the-badge&logo=render) ![Status](https://img-shields-io.proxy.start.gg/badge/Status-Concluído-brightgreen?style=for-the-badge)
+![Java](https://img.shields.io/badge/Java-17+-orange?style=for-the-badge&logo=openjdk) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3+-green?style=for-the-badge&logo=spring) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql) ![Docker](https://img.shields.io/badge/Docker-blue?style=for-the-badge&logo=docker) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render) ![Status](https://img.shields.io/badge/Status-Concluído-brightgreen?style=for-the-badge)
 
 <p align="center">
   <a href="#-visão-geral-do-projeto">Visão Geral</a> •
@@ -10,7 +10,7 @@
   <a href="#-stack-de-tecnologias">Stack</a> •
   <a href="#-executando-localmente">Execução</a> •
   <a href="#-contrato-da-api">API</a> •
-  <a href="#-desafios-e-soluções">Desafios</a> •
+  <a href="#-desafios-de-implementação-e-deploy">Desafios</a> •
   <a href="#-autor">Autor</a>
 </p>
 
@@ -32,7 +32,7 @@ graph TD
         A[Cliente API (Postman/Frontend)]
     end
 
-    subgraph Nuvem (Render)
+    subgraph "Nuvem (Render)"
         B[Load Balancer]
         subgraph "Web Service"
             C[Container Docker]
@@ -43,20 +43,20 @@ graph TD
     end
     
     subgraph "Aplicação Spring Boot (Dentro do Docker)"
-        D{Filtro de Segurança (JwtAuthFilter)}
-        E[Controller Layer (DTOs)]
-        F[Service Layer (Lógica de Negócio)]
-        G[Repository Layer (JPA/Hibernate)]
+        D{Filtro de Segurança <br/> (JwtAuthFilter)}
+        E[Controller Layer <br/> (DTOs)]
+        F[Service Layer <br/> (Lógica de Negócio)]
+        G[Repository Layer <br/> (JPA/Hibernate)]
     end
 
-    A -- HTTPS --> B
-    B --> C
-    C -- Inicia --> D
-    D -- Token Válido? --> |Sim, Autenticado| E
-    D -- Token Válido? --> |Não| X(🚫 Erro 401/403)
-    E --> F
-    F --> G
-    G <--> H
+    A -- HTTPS --> B;
+    B --> C;
+    C -- Inicia Requisição --> D;
+    D -- Token Válido? --> |Sim, Autenticado| E;
+    D -- Token Válido? --> |Não| X(🚫 Erro 401/403);
+    E --> F;
+    F --> G;
+    G <--> H;
 ```
 
 ## 📐 Princípios e Padrões
@@ -75,9 +75,9 @@ graph TD
 -   🧱 **Padrão DTO (Data Transfer Object):** Contratos de API bem definidos para Request e Response.
 -   🚨 **Tratamento de Exceções Global:** Respostas de erro padronizadas e amigáveis utilizando `@RestControllerAdvice`.
 -   📝 **Validação de Dados:** Utilização da especificação Bean Validation (`@Valid`).
--   🔗 **Relacionamentos JPA/Hibernate:** Mapeamento de `OneToMany` e `ManyToMany` com estratégias de `JOIN FETCH` para otimização.
--   🔑 **Gestão de Segredos Profissional:** Externalização de dados sensíveis utilizando variáveis de ambiente.
--   ☁️ **Deploy na Nuvem:** Aplicação containerizada com **Docker** e implantada na **Render**.
+-   🔗 **Relacionamentos JPA/Hibernate:** Mapeamento de `OneToMany` e `ManyToMany` com estratégias de `JOIN FETCH` para otimização de consultas.
+-   🔑 **Gestão de Segredos Profissional:** Externalização de dados sensíveis (como a chave secreta do JWT) utilizando variáveis de ambiente.
+-   ☁️ **Deploy na Nuvem:** Aplicação containerizada com **Docker** e implantada na plataforma **Render**, incluindo um banco de dados PostgreSQL gerenciado.
 
 ## 🛠️ Stack de Tecnologias
 
@@ -92,20 +92,23 @@ graph TD
     git clone [https://github.com/Damasceno11/spring-boot-auth-api.git](https://github.com/Damasceno11/spring-boot-auth-api.git)
     cd spring-boot-auth-api
     ```
+
 2.  **Configure o Banco de Dados:**
     -   Certifique-se de ter o PostgreSQL rodando. Crie um banco de dados (ex: `crud_spring_db`).
-    -   Ajuste o `src/main/resources/application.properties` com suas credenciais.
+    -   No arquivo `src/main/resources/application.properties`, ajuste as credenciais do seu banco local.
+
 3.  **Configure a Variável de Ambiente (JWT Secret Key):**
     -   Na sua IDE (IntelliJ), vá em `Run -> Edit Configurations...`.
     -   Selecione a configuração Maven `Run Spring Boot App`.
     -   Na aba `Runner`, adicione uma `Environment variable`:
         -   **Nome:** `JWT_SECRET_KEY`
         -   **Valor:** `YmQ2Y2ZkYWEtN2I0NC00N2RkLWEzYTgtNTA5YzU3NzBhY2M3LWRiNmMzZjEwLTU0ODMtNDIyNy05NjZkLTQxM2U1MDIxOWZmNQ==`
+
 4.  **Execute a aplicação:**
     ```bash
     mvn spring-boot:run
     ```
-    A API estará disponível em `http://localhost:8080`.
+    A API estará disponível em `http://localhost:8080`. O `DataLoader` irá popular o banco com usuários e dados iniciais, incluindo um usuário admin (`alice123` / `senhaAlice`).
 
 ## 📡 Contrato da API
 
@@ -129,7 +132,7 @@ Esta seção documenta os desafios técnicos encontrados e as soluções profiss
 
   <br>
 
-- **Problema:** A anotação `@Data` do Lombok, quando usada em entidades com relacionamentos bidirecionais (`Usuario` <-> `Produto`), gera métodos `hashCode()` e `equals()` que entram em um loop de recursão infinita, causando um `StackOverflowError`.
+- **Problema:** A anotação `@Data` do Lombok, quando usada em entidades com relacionamentos bidirecionais (ex: `Usuario` <-> `Produto`), gera métodos `hashCode()` e `equals()` que entram em um loop de recursão infinita, um chamando o outro, resultando em um `StackOverflowError`.
 
 - **Solução:** O ciclo foi quebrado instruindo o Lombok a excluir os campos de relacionamento da geração desses métodos, utilizando as anotações `@EqualsAndHashCode.Exclude` e `@ToString.Exclude`.
 
@@ -147,7 +150,7 @@ Esta seção documenta os desafios técnicos encontrados e as soluções profiss
 
   <br>
 
-- **Problema:** A serialização de entidades com coleções *Lazy Loading* causava erros (`ConcurrentModificationException`) e a solução ingênua (`FetchType.EAGER`) levaria ao grave problema de performance N+1 selects.
+- **Problema:** A serialização de entidades com coleções *Lazy Loading* entrava em conflito com o Hibernate. A solução ingênua (`FetchType.EAGER`) levaria ao grave problema de performance N+1 selects.
 
 - **Solução:** Implementamos consultas JPQL customizadas com **`JOIN FETCH`**. Isso instrui o Hibernate a buscar a entidade principal e suas coleções associadas em uma única e eficiente consulta SQL, garantindo que os dados estejam prontos antes da serialização.
 
@@ -159,7 +162,7 @@ Esta seção documenta os desafios técnicos encontrados e as soluções profiss
 </details>
 
 <details>
-  <summary><strong>📦 Desafio 3: Duplicação de Dados em Coleções com Múltiplos JOINs</strong></summary>
+  <summary><strong>📦 Desafio 3: Duplicação de Dados com Múltiplos JOINs</strong></summary>
 
   <br>
 
