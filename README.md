@@ -28,35 +28,30 @@ O diagrama abaixo ilustra o fluxo de uma requisição através dos componentes d
 
 ```mermaid
 graph TD
-    subgraph Cliente
-        A[Cliente API (Postman/Frontend)]
-    end
-
-    subgraph Nuvem (Render)
+    A[Cliente API]
+    
+    subgraph Nuvem
         B[Load Balancer]
-        subgraph "Web Service"
-            C[Container Docker]
-        end
-        subgraph "Database Service"
-            H[(PostgreSQL)]
-        end
+        C[Container Docker]
+        H[(PostgreSQL)]
     end
     
-    subgraph "Aplicação Spring Boot (Dentro do Docker)"
-        D{Filtro de Segurança (JwtAuthFilter)}
-        E[Controller Layer (DTOs)]
-        F[Service Layer (Lógica de Negócio)]
-        G[Repository Layer (JPA/Hibernate)]
+    subgraph Aplicacao
+        D{Filtro Segurança}
+        E[Controller Layer]
+        F[Service Layer]
+        G[Repository Layer]
     end
-
-    A -- HTTPS --> B
+    
+    A --> B
     B --> C
-    C -- Inicia --> D
-    D -- Token Válido? --> |Sim, Autenticado| E
-    D -- Token Válido? --> |Não| X(Erro 401/403)
+    C --> D
+    D -->|Token Válido| E
+    D -->|Token Inválido| X[Erro 401/403]
     E --> F
     F --> G
-    G <--> H
+    G --> H
+    H --> G
 
 ````
 
