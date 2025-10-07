@@ -52,6 +52,7 @@ graph TD
     F --> G
     G --> H
     H --> G
+````
 
 ## 📐 Princípios e Padrões
 
