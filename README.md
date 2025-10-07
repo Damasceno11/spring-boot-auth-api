@@ -42,22 +42,21 @@ graph TD
         end
     end
     
-    subgraph "Aplicação Spring Boot (Dentro do Docker)"
-        D{Filtro de Segurança <br/> (JwtAuthFilter)}
-        E[Controller Layer <br/> (DTOs)]
-        F[Service Layer <br/> (Lógica de Negócio)]
-        G[Repository Layer <br/> (JPA/Hibernate)]
+    subgraph "Aplicação Spring Boot"
+        D{JwtAuthFilter}
+        E[Controller Layer]
+        F[Service Layer]
+        G[Repository Layer]
     end
 
     A -- HTTPS --> B;
     B --> C;
     C -- Inicia Requisição --> D;
-    D -- Token Válido? --> |Sim, Autenticado| E;
-    D -- Token Válido? --> |Não| X(🚫 Erro 401/403);
+    D -- Token Válido? --> |Sim| E;
+    D -- Token Válido? --> |Não| X(Erro 401/403);
     E --> F;
     F --> G;
     G <--> H;
-```
 
 ## 📐 Princípios e Padrões
 
