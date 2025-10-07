@@ -53,12 +53,12 @@ graph TD
     B --> C
     C -- Inicia --> D
     D -- Token Válido? --> |Sim, Autenticado| E
-    D -- Token Válido? --> |Não| X(🚫 Erro 401/403)
+    D -- Token Válido? --> |Não| X(Erro 401/403)
     E --> F
     F --> G
     G <--> H
 
-```
+````
 
 ## 📐 Princípios e Padrões
 
